@@ -13070,6 +13070,7 @@ const joinRoom = initGuard(occupiedRooms, (config, ns) => {
     }
 
     if (val.offer && val.offer_id) {
+		console.log("Test3", val);
       if (connectedPeers[val.peer_id] || handledOffers[val.offer_id]) {
         return
       }
@@ -13102,6 +13103,7 @@ const joinRoom = initGuard(occupiedRooms, (config, ns) => {
     }
 
     if (val.answer) {
+		console.log("Test4", val);
       if (connectedPeers[val.peer_id] || handledOffers[val.offer_id]) {
         return
       }
@@ -13220,6 +13222,7 @@ const joinRoom = initGuard(occupiedRooms, (config, ns) => {
   };
 
   const onConnect = (peer, id, offerId) => {
+	  console.log(peer, id, offerId);
     onPeerConnect(peer, id);
     connectedPeers[id] = true;
 
@@ -14067,6 +14070,7 @@ class TrysteroDocRoom {
     provider.trystero.onPeerJoin((peerId) => {
       log(`${peerId} joined`);
       if (this.trysteroConns.size < provider.maxConns) {
+		  console.log(peerId);
         setIfUndefined(this.trysteroConns, peerId, () => new TrysteroConn(peerId, provider.room));
       }
     });
