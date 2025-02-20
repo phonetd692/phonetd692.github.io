@@ -15031,10 +15031,17 @@ createComponent('y-demo-drawing', {
 			// send stream to peers currently in the room
 			trysteroProvider.trystero.addStream(selfStream)
 				doStream = true;
+				console.log("Started streaming");
 			} else {
 				doStream = false;
 				trysteroProvider.trystero.removeStream(selfStream);
+				const sTracks = selfStream.getTracks();
+				for (const mtrack of sTracks) {
+				  mtrack.stop();
+					selfStream.removeTrack(mtrack);
+				}
 				selfStream = null;
+				console.log("Stopped streaming");
 			}
 		};
       const menuBlack = /** @type {HTMLElement} */ (querySelector(shadow, '#drawer-menubar-colors-black'));
