@@ -14063,7 +14063,7 @@ class TrysteroDocRoom {
     }
 
     provider.trystero.onPeerJoin((peerId) => {
-      log(`${peerId} joined`);
+      console.log(`${peerId} joined`);
       if (this.trysteroConns.size < provider.maxConns) {
 		  console.log(peerId);
         setIfUndefined(this.trysteroConns, peerId, () => new TrysteroConn(peerId, provider.room));
@@ -14084,7 +14084,7 @@ class TrysteroDocRoom {
         ]);
       }
       checkIsSynced(this);
-      log('closed connection to ', BOLD, peerId);
+      console.log('closed connection to ' + peerId);
     });
   }
 
@@ -14263,10 +14263,11 @@ const versionType = versionDoc.getArray('versions');
 
 const doc$1 = new Doc({ gcFilter });
 // export const websocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website' + suffix, doc)
-const appId = 'y-trystero-demo' + suffix;
-const roomId = 'y-trystero-demo-room' + suffix;
+const appId = 'ptdy-trystero-demo' + suffix;
+const roomId = 'ptdy-trystero-demo-room' + suffix;
 const trysteroRoom = joinRoom({ appId }, roomId);
 const trysteroProvider = new TrysteroProvider(roomId, doc$1, trysteroRoom, {maxConns: 1});
+console.log("Demo Index 2: " + selfId);
 const awareness = trysteroProvider.awareness; // websocketProvider.awareness
 
 // export const indexeddbPersistence = new IndexeddbPersistence('yjs-website' + suffix, doc)

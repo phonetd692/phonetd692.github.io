@@ -14258,10 +14258,11 @@ const versionType = versionDoc.getArray('versions');
 
 const doc$1 = new Doc({ gcFilter });
 // export const websocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website' + suffix, doc)
-const appId = 'y-trystero-demo' + suffix;
-const roomId = 'y-trystero-demo-room' + suffix;
+const appId = 'ptdy-trystero-demo' + suffix;
+const roomId = 'ptdy-trystero-demo-room' + suffix;
 const trysteroRoom = joinRoom({ appId }, roomId);
 const trysteroProvider = new TrysteroProvider(roomId, doc$1, trysteroRoom);
+console.log("Index 2: " + selfId);
 const awareness = trysteroProvider.awareness; // websocketProvider.awareness
 
 // export const indexeddbPersistence = new IndexeddbPersistence('yjs-website' + suffix, doc)

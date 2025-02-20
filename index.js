@@ -13070,6 +13070,7 @@ const joinRoom = initGuard(occupiedRooms, (config, ns) => {
     }
 
     if (val.offer && val.offer_id) {
+		console.log("MainTest3", val);					
       if (connectedPeers[val.peer_id] || handledOffers[val.offer_id]) {
         return
       }
@@ -13102,6 +13103,7 @@ const joinRoom = initGuard(occupiedRooms, (config, ns) => {
     }
 
     if (val.answer) {
+		console.log("MainTest4", val);					
       if (connectedPeers[val.peer_id] || handledOffers[val.offer_id]) {
         return
       }
@@ -13220,6 +13222,7 @@ const joinRoom = initGuard(occupiedRooms, (config, ns) => {
   };
 
   const onConnect = (peer, id, offerId) => {
+	console.log(peer, id, offerId);							  
     onPeerConnect(peer, id);
     connectedPeers[id] = true;
 
@@ -14265,16 +14268,40 @@ const versionType = versionDoc.getArray('versions');
 
 const doc$1 = new Doc({ gcFilter });
 // export const websocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website' + suffix, doc)
-const appId = 'y-trystero-demo' + suffix;
-const roomId = 'y-trystero-demo-room' + suffix;
+const appId = 'ptdy-trystero-demo' + suffix;
+const roomId = 'ptdy-trystero-demo-room' + suffix;
 const trysteroRoom = joinRoom({ appId }, roomId);
 const trysteroProvider = new TrysteroProvider(roomId, doc$1, trysteroRoom);
+console.log("Index 1: " + selfId);
 const awareness = trysteroProvider.awareness; // websocketProvider.awareness
 
 // export const indexeddbPersistence = new IndexeddbPersistence('yjs-website' + suffix, doc)
 
 const prosemirrorEditorContent = doc$1.getXmlFragment('prosemirror');
+// this object can store audio instances for later
+const peerAudios = {}
 
+// get a local audio stream from the microphone
+var selfStream = null
+
+// send stream to peers currently in the room
+if (selfStream != null) {
+	trysteroProvider.trystero.addStream(selfStream);
+}
+// send stream to peers who join later
+trysteroProvider.trystero.onPeerJoin(peerId => {console.log("JoinTest1: " + peerId); if (selfStream != null) {trysteroProvider.trystero.addStream(selfStream, peerId);});
+
+// handle streams from other peers
+trysteroProvider.trystero.onPeerStream((stream, peerId) => {
+  // create an audio instance and set the incoming stream
+  const audio = new Audio()
+  audio.srcObject = stream
+  audio.autoplay = true
+
+  // add the audio to peerAudio object if you want to address it for something
+  // later (volume, etc.)
+  peerAudios[peerId] = audio
+})
 // versionIndexeddbPersistence.on('synced', () => {
 //   lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot
 //   versionType.observe(() => {
@@ -14845,6 +14872,8 @@ createComponent('y-demo-drawing', {
     <div id="drawer-menubar-colors-orange"></div>
     <div id="drawer-menubar-colors-blue"></div>
     <div id="drawer-menubar-colors-green"></div>
+	<div id="drawer-menubar-colors-pink"></div>
+	<div id="drawer-menubar-colors-red"></div>
   </div>
   <canvas width="2000" height="2000"></canvas>
   `,
@@ -14984,16 +15013,35 @@ createComponent('y-demo-drawing', {
         yDrawingContent.delete(0, yDrawingContent.length);
         drawingMenubarCheckbox.checked = false;
       };
+		const cPink = () => {
+			let tpeers = trysteroProvider.trystero.getPeers();
+			console.log("TrysteroConns: ", trysteroProvider.room.trysteroConns);
+			console.log("TryPeers: ", tpeers);
+			tpeers.forEach((_value, key) => {
+				async () => console.log(`${key} took ${await room.ping(key)}ms`)
+			});
+		};
+		const cRed = () => {
+			selfStream = await navigator.mediaDevices.getUserMedia({
+			  audio: true,
+			  video: false
+			})
 
+			// send stream to peers currently in the room
+			trysteroProvider.trystero.addStream(selfStream)
+		};
       const menuBlack = /** @type {HTMLElement} */ (querySelector(shadow, '#drawer-menubar-colors-black'));
       const menuOrange = /** @type {HTMLElement} */ (querySelector(shadow, '#drawer-menubar-colors-orange'));
       const menuBlue = /** @type {HTMLElement} */ (querySelector(shadow, '#drawer-menubar-colors-blue'));
       const menuGreen = /** @type {HTMLElement} */ (querySelector(shadow, '#drawer-menubar-colors-green'));
-
+const menuPink = /** @type {HTMLElement} */ (querySelector(shadow, '#drawer-menubar-colors-pink'));
+const menuRed = /** @type {HTMLElement} */ (querySelector(shadow, '#drawer-menubar-colors-red'));
       menuBlack.addEventListener('click', cBlack);
       menuOrange.addEventListener('click', cOrange);
       menuBlue.addEventListener('click', cBlue);
       menuGreen.addEventListener('click', cGreen);
+	  menuPink.addEventListener('click', cPink);
+      menuRed.addEventListener('click', cRed);
       drawingMenubarActionClear.addEventListener('click', cClear);
 
       if (el._internal.unregister) {
@@ -15004,6 +15052,8 @@ createComponent('y-demo-drawing', {
         menuOrange.removeEventListener('click', cOrange);
         menuBlue.removeEventListener('click', cBlue);
         menuGreen.removeEventListener('click', cGreen);
+		menuPink.removeEventListener('click', cPink);
+      menuRed.removeEventListener('click', cRed);
         drawingMenubarActionClear.removeEventListener('click', cClear);
       };
     }
@@ -15138,7 +15188,13 @@ createComponent('y-demo-drawing', {
   }
   #drawer-menubar-colors-green {
     background-color: var(--theme-green);
-  }  
+  }
+#drawer-menubar-colors-red {
+    background-color: var(--theme-red);
+  } 
+#drawer-menubar-colors-pink {
+    background-color: var(--theme-pink);
+  }   
   `
 });
 
