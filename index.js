@@ -14282,14 +14282,14 @@ const prosemirrorEditorContent = doc$1.getXmlFragment('prosemirror');
 const peerAudios = {}
 
 // get a local audio stream from the microphone
-var selfStream = null
-
+var selfStream = null;
+var doStream = false;
 // send stream to peers currently in the room
-if (selfStream != null) {
+if (selfStream != null && doStream) {
 	trysteroProvider.trystero.addStream(selfStream);
 }
 // send stream to peers who join later
-trysteroProvider.trystero.onPeerJoin(peerId => {console.log("JoinTest1: " + peerId); if (selfStream != null) {trysteroProvider.trystero.addStream(selfStream, peerId);}});
+trysteroProvider.trystero.onPeerJoin(peerId => {console.log("JoinTest1: " + peerId); if (selfStream != null && doStream) {trysteroProvider.trystero.addStream(selfStream, peerId);}});
 
 // handle streams from other peers
 trysteroProvider.trystero.onPeerStream((stream, peerId) => {
@@ -15018,7 +15018,7 @@ createComponent('y-demo-drawing', {
 			console.log("TrysteroConns: ", trysteroProvider.room.trysteroConns);
 			console.log("TryPeers: ", tpeers);
 			for (const [key, value] of Object.entries(tpeers)) {
-			  console.log(`${key} took ${await room.ping(key)}ms`);
+			  console.log(`${key} took ${await trysteroProvider.room.ping(key)}ms`);
 			}
 		};
 		const cRed = async () => {
@@ -15030,11 +15030,11 @@ createComponent('y-demo-drawing', {
 
 			// send stream to peers currently in the room
 			trysteroProvider.trystero.addStream(selfStream)
+				doStream = true;
 			} else {
-				let tStr = selfStream;
+				doStream = false;
+				trysteroProvider.trystero.removeStream(selfStream);
 				selfStream = null;
-				trysteroProvider.trystero.removeStream(tStr);
-				tStr = null;
 			}
 		};
       const menuBlack = /** @type {HTMLElement} */ (querySelector(shadow, '#drawer-menubar-colors-black'));
