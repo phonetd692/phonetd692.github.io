@@ -14275,7 +14275,29 @@ const trysteroRoom = joinRoom({ appId }, roomId);
 const trysteroProvider = new TrysteroProvider(roomId, doc$1, trysteroRoom, {maxConns: 1});
 console.log("Demo Index 1: " + selfId);
 const awareness = trysteroProvider.awareness; // websocketProvider.awareness
+const peerAudios = {}
 
+// get a local audio stream from the microphone
+var selfStream = null
+
+// send stream to peers currently in the room
+if (selfStream != null) {
+	trysteroProvider.trystero.addStream(selfStream);
+}
+// send stream to peers who join later
+trysteroProvider.trystero.onPeerJoin(peerId => {console.log("JoinTest1: " + peerId); if (selfStream != null) {trysteroProvider.trystero.addStream(selfStream, peerId);}});
+
+// handle streams from other peers
+trysteroProvider.trystero.onPeerStream((stream, peerId) => {
+  // create an audio instance and set the incoming stream
+  const audio = new Audio()
+  audio.srcObject = stream
+  audio.autoplay = true
+
+  // add the audio to peerAudio object if you want to address it for something
+  // later (volume, etc.)
+  peerAudios[peerId] = audio
+})
 // export const indexeddbPersistence = new IndexeddbPersistence('yjs-website' + suffix, doc)
 
 const prosemirrorEditorContent = doc$1.getXmlFragment('prosemirror');
