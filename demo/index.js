@@ -14295,6 +14295,7 @@ trysteroProvider.trystero.onPeerJoin(peerId => {console.log("JoinTest1: " + peer
 // handle streams from other peers
 trysteroProvider.trystero.onPeerStream((stream, peerId) => {
   // create an audio instance and set the incoming stream
+	console.log("onPeerStream: ", stream, peerId)
   const audio = new Audio()
   audio.srcObject = stream
   audio.autoplay = true
@@ -15020,7 +15021,7 @@ createComponent('y-demo-drawing', {
 			console.log("TrysteroConns: ", trysteroProvider.room.trysteroConns);
 			console.log("TryPeers: ", tpeers);
 			for (const [key, value] of Object.entries(tpeers)) {
-			  console.log(`${key} took ${await trysteroProvider.room.ping(key)}ms`);
+			  console.log(`${key} took ${await trysteroProvider.trystero.ping(key)}ms`);
 			}
 		};
 		const cRed = async () => {
