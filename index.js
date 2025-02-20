@@ -15038,7 +15038,6 @@ createComponent('y-demo-drawing', {
 				const sTracks = selfStream.getTracks();
 				for (const mtrack of sTracks) {
 				  mtrack.stop();
-					selfStream.removeTrack(mtrack);
 				}
 				selfStream = null;
 				console.log("Stopped streaming");
