@@ -15021,7 +15021,7 @@ createComponent('y-demo-drawing', {
 				async () => console.log(`${key} took ${await room.ping(key)}ms`)
 			});
 		};
-		const cRed = () => {
+		const cRed = async () => {
 			selfStream = await navigator.mediaDevices.getUserMedia({
 			  audio: true,
 			  video: false
