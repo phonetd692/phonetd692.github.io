@@ -14289,7 +14289,7 @@ if (selfStream != null) {
 	trysteroProvider.trystero.addStream(selfStream);
 }
 // send stream to peers who join later
-trysteroProvider.trystero.onPeerJoin(peerId => {console.log("JoinTest1: " + peerId); if (selfStream != null) {trysteroProvider.trystero.addStream(selfStream, peerId);});
+trysteroProvider.trystero.onPeerJoin(peerId => {console.log("JoinTest1: " + peerId); if (selfStream != null) {trysteroProvider.trystero.addStream(selfStream, peerId);}});
 
 // handle streams from other peers
 trysteroProvider.trystero.onPeerStream((stream, peerId) => {
