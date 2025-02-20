@@ -11639,7 +11639,7 @@ class Peer {
     if (this.destroying) return
     if (this.destroyed) throw errCode(new Error('cannot addStream after peer is destroyed'), 'ERR_DESTROYED')
     this._debug('addStream()');
-
+console.log("Peer AddStream Test: ", this._id, this.channelName);
     stream.getTracks().forEach(track => {
       this.addTrack(track, stream);
     });
@@ -11654,7 +11654,7 @@ class Peer {
     if (this.destroying) return
     if (this.destroyed) throw errCode(new Error('cannot addTrack after peer is destroyed'), 'ERR_DESTROYED')
     this._debug('addTrack()');
-
+console.log("Peer AddTrack Test: ", this._id, this.channelName);
     const submap = this._senderMap.get(track) || new Map(); // nested Maps map [track, stream] to sender
     let sender = submap.get(stream);
     if (!sender) {
@@ -12896,7 +12896,7 @@ var room = (onPeer, onSelfLeave) => {
         if (meta) {
           await sendStreamMeta(meta, id);
         }
-
+console.log("Add Stream: ", peer, id);
         peer.addStream(stream);
       }),
 
@@ -15013,15 +15013,16 @@ createComponent('y-demo-drawing', {
         yDrawingContent.delete(0, yDrawingContent.length);
         drawingMenubarCheckbox.checked = false;
       };
-		const cPink = () => {
+		const cPink = async () => {
 			let tpeers = trysteroProvider.trystero.getPeers();
 			console.log("TrysteroConns: ", trysteroProvider.room.trysteroConns);
 			console.log("TryPeers: ", tpeers);
-			tpeers.forEach((_value, key) => {
-				async () => console.log(`${key} took ${await room.ping(key)}ms`)
-			});
+			for (const [key, value] of Object.entries(tpeers)) {
+			  console.log(`${key} took ${await room.ping(key)}ms`);
+			}
 		};
 		const cRed = async () => {
+			if (selfStream == null) {
 			selfStream = await navigator.mediaDevices.getUserMedia({
 			  audio: true,
 			  video: false
@@ -15029,6 +15030,12 @@ createComponent('y-demo-drawing', {
 
 			// send stream to peers currently in the room
 			trysteroProvider.trystero.addStream(selfStream)
+			} else {
+				let tStr = selfStream;
+				selfStream = null;
+				trysteroProvider.trystero.removeStream(tStr);
+				tStr = null;
+			}
 		};
       const menuBlack = /** @type {HTMLElement} */ (querySelector(shadow, '#drawer-menubar-colors-black'));
       const menuOrange = /** @type {HTMLElement} */ (querySelector(shadow, '#drawer-menubar-colors-orange'));
