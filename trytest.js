@@ -1,6 +1,6 @@
-import {joinRoom} from './trystmin.js'
+import {joinRoom} from './trystero-ipfs.min.js'
 
-const config = {appId: '3d_app_test', password: 'this is my password'}
+const config = {appId: '3d_app_test', password: 'this is my password3'}
 const room = joinRoom(config, 'yodddyne')
 console.log("Test Log");
 var selfStream = null;
@@ -30,6 +30,9 @@ button3.onclick = function() {
 room.onPeerJoin(peerId => console.log(peerId));
 
 // handle streams from other peers
+room.onPeerTrack((track, stream, peerId, meta) => {
+	console.log("Peer track: ", track, peerId, meta, stream);
+})
 room.onPeerStream((stream, peerId, meta) => {
 	console.log("Peer stream: ", peerId, meta, stream);
 })
