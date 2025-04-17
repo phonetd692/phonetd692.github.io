@@ -4,14 +4,15 @@ const config = {appId: '3d_app_test', password: 'this is my password3'}
 const room = joinRoom(config, 'yodddyne')
 console.log("Test Log");
 var selfStream = null;
-
+var self2Stream = null;
+var cou = 0;
 var button1 = document.getElementById("button1");
 button1.onclick = async function() {
 selfStream ??= await navigator.mediaDevices.getUserMedia({
   audio: true,
   video: false
 })
-      room.addStream(selfStream, null, "testMeta");
+      room.addStream(selfStream, null, `testMeta: ${cou++}`);
     };
     
     var button2 = document.getElementById("button2");
@@ -22,6 +23,15 @@ button2.onclick = function() {
     var button3 = document.getElementById("button3");
 button3.onclick = function() {
       room.leave();
+    };
+
+var button4 = document.getElementById("button4");
+button4.onclick = async function() {
+selfStream2 ??= await navigator.mediaDevices.getUserMedia({
+  audio: false,
+  video: true
+})
+      room.replaceTrack(selfStream.getTracks()[0], selfStream2.getTracks()[0], selfStream, null, `testMeta: ${cou++}`);
     };
 // send stream to peers currently in the room
 
