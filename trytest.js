@@ -1,4 +1,4 @@
-import {joinRoom} from './trystero-ipfs.min.js'
+import {joinRoom} from './trystero-nostr.min.js'
 
 const config = {appId: '3d_app_test', password: 'this is my password3'}
 const room = joinRoom(config, 'yodddyne')
